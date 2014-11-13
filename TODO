@@ -1,0 +1,1 @@
+- Fix the padding issue with the subtraction function in arith_tbl()
