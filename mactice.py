@@ -5,7 +5,7 @@
 # Author: Tomm Smith (root DOT packet AT gmail DOT com)
 # Date: 13 NOV 2014
 # Version: 0.1
-# Notes: In Christ Jesus' name are you forgiven
+# Notes: In Christ Jesus' name are you forgiven.
 ############################################################
 
 
