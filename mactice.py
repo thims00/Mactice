@@ -30,60 +30,89 @@ def arith_tbl(func="mul", size=12):
 
     Notes: Only supports up to 1000 before the grid is thrown out of symmetry.
     """
-    if func == "add":
-        prod = "y + x"
-    elif func == "sub":
-        prod = "y - x"
-    elif func == "mul":
-        prod = "y * x"
-    elif func == "div":
-        prod = "y / x"
-    else:
-        return False
+    color = {'BLACK'  : '\033[0;30m',
+             'RED'    : '\033[0;31m',
+             'cycle'  : ['\033[0;34m', # Blue
+                         '\033[0;32m', # Green
+                         '\033[0;36m', # Cyan
+                         '\033[0;35m', # Purple
+                         '\033[0;33m' # Brown
+                        ]
+            }
 
     try:
         int(size)
     except ValueError:
         return False
-    
-    # Table Header
-    print("|-----------------------------------------------------------------------------|")
-    print("|     ", end="")
-    for i in range(1, size + 1):
-        if i < 10:
-            print("|  %d  " % i, end="")
-        else:
-            print("|  %d " % i, end="")
+   
 
-    print("|")
-    print("|-----------------------------------------------------------------------------|")
+    ## Table Header
+    print("%s|-----------------------------------------------------------------------------|" % color['BLACK'])
+    print("|     |", end="")
+    
+    # Print 1 through N in the ordered color cycle, Bl, Gr, Cy, Pr, Br, Bl, ...
+    for i in range(0, size):
+        pos=i % len(color['cycle'])
+        print("%s" % color['cycle'][pos], end="")
+
+        hmn_num = i + 1
+        if hmn_num < 10:
+            print("  %d  " % hmn_num, end="")
+        else:
+            print("  %d " % hmn_num, end="")
+        print("%s|" % color['BLACK'], end="")
+
+    print("%s\n|-----------------------------------------------------------------------------|" %
+            color['BLACK'])
     
     ## Main table body
+    color_cnt = len(color['cycle'])
     # Y plane
-    for y in range(1, size + 1):
-        if y < 10:
-            print("|  %d  " % y, end="")
+    for y in range(0, size):
+        print("%s|" % color['BLACK'], end="")
+
+        clr = color['cycle'][y % color_cnt]
+        if y < 9:
+            print("  %s%d  %s|" % (clr, y + 1, color['BLACK']), end="")
         else:
-            print("|  %d " % y, end="")
-    
+            print("  %s%d %s|" % (clr, y + 1, color['BLACK']), end="")
+
         # X plane
-        for x in range(1, size + 1):
-            product=eval(prod)
-            if product < 10:
-                print("|  %d  " % product, end="")
-            elif product < 100:
-                print("|  %d " % product, end="")
-            elif product < 1000:
-                print("| %d " % product, end="")
+        color_step = 0
+        for x in range(0, size):
+            # Define our arithmetic operation
+            lft = x + 1
+            rgt = y + 1
+            if func == "add":
+                product = lft + rgt
+            elif func == "sub":
+                product = left - rgt
+            elif func == "mul":
+                product = lft * rgt
+            elif func == "div":
+                product = lft / rgt
+            else:
+                product = lft * rgt
     
-        print("|\n|-----------------------------------------------------------------------------|")
+            if x <= y:
+                clr = color['cycle'][y  % color_cnt]
+            else:
+                clr = color['cycle'][x % color_cnt]
+
+            if product < 10:
+                print("  %s%d  %s|" % (clr, product, color['BLACK']), end="")
+            elif product < 100:
+                print("  %s%d %s|" % (clr, product, color['BLACK']), end="")
+            elif product < 1000:
+                print(" %s%d %s|" % (clr, product, color['BLACK']), end="")
+
+        print("\n|-----------------------------------------------------------------------------|")
 
 
 
 
 if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "func="])
-    print(opts)
     for opt, arg in opts:
         if opt == "-h" or opt == "--help":
             print("Help")
