@@ -86,7 +86,7 @@ def arith_tbl(func="mul", size=12):
             if func == "add":
                 product = lft + rgt
             elif func == "sub":
-                product = left - rgt
+                product = lft - rgt
             elif func == "mul":
                 product = lft * rgt
             elif func == "div":
@@ -109,15 +109,39 @@ def arith_tbl(func="mul", size=12):
         print("\n|-----------------------------------------------------------------------------|")
 
 
+def help(msg=None):
+    """ help(msg=None)
+
+    Print the [error message and] help information and exit.
+
+    Arguments: @arg str msg - A specific message to display before help output.
+
+    Return: True
+    """
+    if msg:
+        print(msg)
+
+    basename = sys.argv[0].strip('./')
+
+    print("%s - A tool for practicing math on the terminal." % basename)
+    print("\t-h,--help - Print this help and exit.")
+    print("\t-f,--func [add,sub,mul,div] - Print the math table of provided arithmetic function. Default: times")
+    
+    return True
+
+
 
 
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "func="])
+    # TODO: Use the getopt error function
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "func="])
+    except getopt.GetoptError:
+        help("ERROR: You have entered an invalid argument or value.")
+        sys.exit(1)
+        
     for opt, arg in opts:
         if opt == "-h" or opt == "--help":
-            print("Help")
+            help()
         elif opt == "-f" or opt == "--func":
             arith_tbl(arg)
-
-
-
