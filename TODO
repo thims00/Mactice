@@ -1,1 +1,5 @@
 - Fix the padding issue with the subtraction function in arith_tbl()
+- Create an independent function to deal with processing a general "object" of arithmetic function identification and processing.
+  \- This object idea has came up twice now. Essentially a class to create and object of arithmetic function that can store all pertaining properties.
+- Incorporate support for negative numbers into the arithmetic functions, or branch this off as an extra feature. Algebraic functions evade the basic scope though. 
+  Needed?
