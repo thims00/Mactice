@@ -14,6 +14,17 @@
 import sys
 import getopt
 
+global results
+class results:
+   status = False
+   error = None
+   func = 'mul'
+   right = None
+   no_of_probs = None
+   results = {}
+
+
+
 
 def arith_tbl(arith_obj):
     """ arith_tbl(arith_obj)
@@ -320,8 +331,23 @@ def is_arith_obj(arith_obj, validate=False):
     return True
 
 
-def prac_shell(arith_obj):#upto=12, func="mul", rndm=False):
-    """ prac_shell(arith_obj) func="mul", rndm=False)
+def is_results_obj(res_obj, validate=False):
+    """ is_results_obj(res_obj)
+
+    Check if provided data structure is a valid results object
+
+    Arguments: @arg obj res_obj   - A valid results object containing the data 
+                                    structure.
+               @arg bool validate - Validate if the data is sane and of the right
+                                    types.
+
+    Return: True upon it being valid, false otherwise.
+    """
+    return True
+
+
+def prac_shell(arith_obj):
+    """ prac_shell(arith_obj)
 
     Practice arithmetic through an interactive shell.
 
@@ -330,79 +356,93 @@ def prac_shell(arith_obj):#upto=12, func="mul", rndm=False):
 
     Return: Object (struct) of results; upon success filled with data, 
             upon failure, False/None.
-            EG. Object.status = False
-                Object.error = "Some Error Message"
-                Object.func = 'mul'
-                Object.results = {'2:3' : True, '2:4' : True, '2:5', False, ...}
-                ...
     """
     if not is_arith_obj(arith_obj, True):
         raise TypeError("prac_shell(): Supplied arithmetic object is not valid object.")
         
-    class results:
-        status = False
-        func = None
-        results = {}
-    
     results.func = arith_obj.function
-
-    for step in range(arith_obj.start, arith_obj.end + 1):
+    
+    step = arith_obj.start
+    while step <= arith_obj.end:
         arith_obj.denominator = step
         dsply_prob(arith_obj)
-        answer = input(" = ")
-
+       
         try:
-            int(answer)
+            answer = float(input(" = "))
         except ValueError:
             print("Error, you must enter a numerical number.")
-            continue
+            continue 
 
         prob_str = "%d %s %d" % (arith_obj.numerator, arith_obj.func_char, 
                                  step)
-
         crct_val = eval(prob_str)
 
         res_indx = "%d:%d" % (arith_obj.numerator, step)
-        if int(answer) != int(crct_val):
-            print("Incorrect!")
-            print("%s = %d" % (prob_str, crct_val))
-            print()
+        if answer == crct_val or answer == round(crct_val, 1) \
+                or answer == round(crct_val, 2) \
+                or answer == round(crct_val, 3) \
+                or answer == round(crct_val, 4):
 
-            results.results[res_indx] = False
-        else:
             print("Correct!")
             print()
 
             results.results[res_indx] = True
+        else:
+            print("Incorrect!")
+            print("%s = %f" % (prob_str, crct_val))
+            print()
+
+            results.results[res_indx] = False
+
+        step += 1
 
     return results
-         
+        
+
+def store_rslts(results):
+    """ stroe_rslsts(results)
+
+    Store the results to the tracking file.
+
+    Arguments:
+
+    Return:
+    """
+    None
+
 
 
 
 if __name__ == "__main__":
-    # TODO: Use the getopt error function
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "dhpf:", ["practice", "help", "func="])
+        opts, args = getopt.getopt(sys.argv[1:], "dhpt", ["practice", "help", "table"])
     except getopt.GetoptError:
         help("ERROR: You have entered an invalid argument or value.")
         sys.exit(1)
         
+    if len(sys.argv) <= 1:
+        help()
+        sys.exit(0)
+
     for opt, arg in opts:
         if opt == "-h" or opt == "--help":
             help()
-        elif opt == "-f" or opt == "--func":
+
+        elif opt == "-t" or opt == "--table":
             if arg:
                 arith_tbl(arg)
             else:
                 arith_tbl()
+
         elif opt == "-p" or opt == "--practice":
-            res = prac_shell(arith_obj('mul', 1, 5, 1, 5))
+            res = prac_shell(arith_obj('div', 1, 5, 1, 5))
+            store_rslts(res)
 
         elif opt == "-d":
-            print(dsply_prob(arith_obj('add', 1, 12, 29847565432, 82)))
-            print(dsply_prob(arith_obj('sub', 1, 12, 29848272298, 82)))
-            print(dsply_prob(arith_obj('mul', 1, 12, 29848272298, 82)))
-            print(dsply_prob(arith_obj('div', 1, 12, 298, 82)))
+            print("None")
+
+        else:
+            help("ERROR: You entered an invalid argument")
+            sys.exit(1)
 
     sys.exit(0)
